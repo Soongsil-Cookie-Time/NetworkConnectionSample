@@ -1,6 +1,8 @@
 package com.ssuclass.networkconnection.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         this.fetchAndDisplayData();
+        this.setOnGotoSecondActivityButton();
     }
 
     @Override
@@ -64,6 +67,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<CatFact> call, Throwable throwable) {
                 Toast.makeText(MainActivity.this, "API 연결 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setOnGotoSecondActivityButton() {
+        binding.secondActivityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                startActivity(intent);
             }
         });
     }
