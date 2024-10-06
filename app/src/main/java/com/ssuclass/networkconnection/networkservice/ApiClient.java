@@ -1,4 +1,4 @@
-package com.ssuclass.networkconnection;
+package com.ssuclass.networkconnection.networkservice;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

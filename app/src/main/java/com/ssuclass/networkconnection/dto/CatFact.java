@@ -1,4 +1,4 @@
-package com.ssuclass.networkconnection;
+package com.ssuclass.networkconnection.dto;
 
 public class CatFact {
     private String fact;
