@@ -2,6 +2,7 @@ package com.ssuclass.networkconnection.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,8 +15,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.ssuclass.networkconnection.databinding.ActivityMainBinding;
 import com.ssuclass.networkconnection.dto.CatFact;
-import com.ssuclass.networkconnection.networkservice.ApiClient;
+import com.ssuclass.networkconnection.dto.KoreanPhrase;
+import com.ssuclass.networkconnection.networkservice.CatApiClient;
 import com.ssuclass.networkconnection.networkservice.CatFactService;
+import com.ssuclass.networkconnection.networkservice.KoreanPhraseApiClient;
+import com.ssuclass.networkconnection.networkservice.KoreanPhraseService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +27,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    ActivityMainBinding binding;
+    private static final String tag = "MainActivity";
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        this.fetchAndDisplayData();
         this.setOnGotoSecondActivityButton();
     }
 
@@ -48,8 +52,19 @@ public class MainActivity extends AppCompatActivity {
         binding = null;
     }
 
-    private void fetchAndDisplayData() {
-        CatFactService service = ApiClient.getClient().create(CatFactService.class);
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.fetchAndDisplayCatData();
+        this.fetchAndDisplayKoreanData();
+    }
+
+    /**
+     * 데이터를 가져오는 메소드
+     */
+    private void fetchAndDisplayCatData() {
+        CatFactService service = CatApiClient.getClient().create(CatFactService.class);
         Call<CatFact> call = service.getCatFact();
         call.enqueue(new Callback<CatFact>() {
             @Override
@@ -57,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     CatFact catFact = response.body();
                     if (catFact != null) {
+                        Log.v(tag, catFact.getFact());
                         binding.catFactTextView.setText(catFact.getFact());
                     }
                 } else {
@@ -66,6 +82,34 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CatFact> call, Throwable throwable) {
+                Toast.makeText(MainActivity.this, "API 연결 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 데이터를 가져오는 메소드
+     */
+    private void fetchAndDisplayKoreanData() {
+        KoreanPhraseService service = KoreanPhraseApiClient.getClient().create(KoreanPhraseService.class);
+        Call<KoreanPhrase> call = service.getKoreanPhrase();
+        call.enqueue(new Callback<KoreanPhrase>() {
+            @Override
+            public void onResponse(@NonNull Call<KoreanPhrase> call, @NonNull Response<KoreanPhrase> response) {
+                if (response.isSuccessful()) {
+                    KoreanPhrase koreanPhrase = response.body();
+                    if (koreanPhrase != null) {
+                        Log.v(tag, koreanPhrase.getAuthor());
+                        Log.v(tag, koreanPhrase.getAuthorProfile());
+                        Log.v(tag, koreanPhrase.getMessage());
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "API 연결 실패", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<KoreanPhrase> call, @NonNull Throwable throwable) {
                 Toast.makeText(MainActivity.this, "API 연결 실패", Toast.LENGTH_SHORT).show();
             }
         });

@@ -3,8 +3,8 @@ package com.ssuclass.networkconnection.networkservice;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiClient {
-    private static final String BASE_URL = "https://catfact.ninja/";
+public class KoreanPhraseApiClient {
+    private static final String BASE_URL = "https://korean-advice-open-api.vercel.app/api/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
